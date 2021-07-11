@@ -2,14 +2,16 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useHistory } from 'react-router-dom';
 import arrow from './right-arrow.png';
 import check from './check.png';
 import link from './link.png';
 import Larrow from './left-arrow.png';
 
 const App = () => {
-  let userId = '1';
-  let recipientId = '2';
+  let history = useHistory();
+  let userId = localStorage.getItem('userID');
+  let recepientId = localStorage.getItem('recepientID');
   const [data, setData] = useState([]);
   
   const [arr1, setArr1] = useState([]);
@@ -18,8 +20,10 @@ const App = () => {
   
   useEffect(() => {
 
-  function getData() {
-    fetch('https://dev.onebanc.ai/assignment.asmx/GetTransactionHistory?userId='+userId+'&recipientId='+recipientId)
+  const getData = () => {
+    console.log(localStorage.getItem('userID'));
+    console.log(localStorage.getItem('recepientID'));
+    fetch('https://dev.onebanc.ai/assignment.asmx/GetTransactionHistory?userId='+localStorage.getItem('userID')+'&recipientId='+localStorage.getItem('recepientID'))
     .then(res => {
       return res.json()})
     .then(text => {
@@ -29,6 +33,7 @@ const App = () => {
       const arr = [];
       const other = [];
       let val1 = '';
+      if (val != null) {
       val.forEach(e => {
         arr.push(e);
         if (e.startDate.substring(0,10)!== val1) {
@@ -36,6 +41,7 @@ const App = () => {
           val1 = e.startDate.substring(0,10);
         }
       });
+    }
       setData(arr);
       setArr1(other);
     });
@@ -43,12 +49,12 @@ const App = () => {
 
 
     getData();
-  }, [userId, recipientId])
+  }, [userId, recepientId])
 
   return (
     <div id="App" className="container App my-3 py-3 px-0">
       <div className="user_info d-flex mb-3">
-        <img className="icon-medium mx-3" src={Larrow} alt="missing-img"></img>
+        <img className="icon-medium mx-3" src={Larrow} onClick={() => {history.push('/')}} alt="missing-img"></img>
         <div className="circle mb-2 mx-2">
           <h1 className="my-2">J</h1>
         </div>
