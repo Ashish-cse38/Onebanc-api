@@ -12,40 +12,38 @@ const App = () => {
   let recipientId = '2';
   const [data, setData] = useState([]);
   
-  const val = '';
   const [arr1, setArr1] = useState([]);
 
   const month_name = {'01': 'Jan', '02': 'Feb', '03': 'Mar', '04': 'Apr', '05': 'May', '06': 'Jun', '07': 'Jul', '08': 'Aug', '09': 'Sep', '10': 'Oct', '11': 'Nov', '12': 'Dec'};
   
-  const getData = () => {
+  useEffect(() => {
+
+  function getData() {
     fetch('https://dev.onebanc.ai/assignment.asmx/GetTransactionHistory?userId='+userId+'&recipientId='+recipientId)
     .then(res => {
       return res.json()})
     .then(text => {
-      console.log(text);
-      console.log(text.transactions);
       return text.transactions;
     })
     .then(val => {
       const arr = [];
       const other = [];
+      let val1 = '';
       val.forEach(e => {
         arr.push(e);
-        if (e.startDate.substring(0,10)!== val) {
+        if (e.startDate.substring(0,10)!== val1) {
           other.push(e.id);
-          val = e.startDate.substring(0,10);
+          val1 = e.startDate.substring(0,10);
         }
       });
       setData(arr);
       setArr1(other);
-      console.log(data);
-      console.log(arr1);
     });
   }
 
-  useEffect(() => {
+
     getData();
-  }, [])
+  }, [userId, recipientId])
 
   return (
     <div id="App" className="container App my-3 py-3 px-0">
